@@ -1,6 +1,6 @@
 # ML2 Team1
-| Something          | Info
-| ------------------ | ---------------------------------
-| 6.6 Lab 2          | Ridge Regression and the Lasso
-| 6.7 Lab 3          | PCR and PLS Regression
-| Applied Exercise 9 | Number of Applications Prediction
+| Something          | Info                              | File Name
+| ------------------ | --------------------------------- | --------------
+| 6.6 Lab 2          | Ridge Regression and the Lasso    | TBD
+| 6.7 Lab 3          | PCR and PLS Regression            | TBD
+| Applied Exercise 9 | Number of Applications Prediction | 1A1_applied_v1
