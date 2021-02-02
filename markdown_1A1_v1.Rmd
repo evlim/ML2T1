@@ -1,0 +1,162 @@
+
+## Linear Model Selection and Regularization {.tabset .tabset-fade} 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, include=FALSE}
+#Use in other sections as necessary 
+library(glmnet)
+library(ISLR)
+library(caret)
+library(pls)
+```
+
+### Introduction 
+
+In this team presentation, you will have the chance to learn more about ridge and lasso regression and their implications on model selection. You will also have the chance to look at PCR and PLS models and their implications. The former concepts will be explored in two seperate labs, followed by a guided exercise from An Introduction to Statistical Learning. 
+
+### Ridge/Lasso Data
+
+Load `glmnet` and `ISLR` library
+
+```{r, collapse=T, comment=NA, warning=F}
+library(glmnet)
+library(ISLR)
+data("Hitters")
+```
+
+Summarize the data, then looks for any discrepencies (NA's, redundancies, etc.)
+
+```{r, collapse=T, comment=NA, warning=F}
+summary(HitData)
+
+sum(is.na(Hitters)) #59 N/A Values
+HitData<-complete.cases(Hitters) # Figure out complete cases
+HitData<-Hitters[HitData,] #Subset Complete cases
+head(HitData)
+str(HitData) # 19 Predictors - 3 are 2 level so ~19 to start 
+```
+
+Create Model
+
+```{r, collapse=T, comment=NA, warning=F}
+?model.matrix
+x=model.matrix(Salary~.,HitData)[,-1]
+str(x) # Still 19 since 3 factors are dummy 1/0's
+
+y=HitData$Salary
+```
+
+Ridge Regression (Alpha (0=Ridge, 1=Lasso))
+```{r, collapse=T, comment=NA, warning=F}
+grid=10^seq(10,-2,length=100)
+ridge.mod=glmnet(x,y,alpha = 0,lambda = grid)
+
+COEF<-coef(ridge.mod)
+dim(COEF)
+```
+Large Lambda
+```{r, collapse=T, comment=NA, warning=F}
+ridge.mod$lambda[50]
+
+coef(ridge.mod)[,50]
+sqrt(sum(coef(ridge.mod)[-1,50]^2))
+```
+
+Small Lambda
+```{r, collapse=T, comment=NA, warning=F}
+ridge.mod$lambda[60]
+
+coef(ridge.mod)[,60]
+sqrt(sum(coef(ridge.mod)[-1,60]^2))
+```
+Predict for a new lambda 
+```{r, collapse=T, comment=NA, warning=F}
+predict(ridge.mod,s=50,type = "coefficients")[1:20,]
+```
+Create Train & Test Data sets
+```{r, collapse=T, comment=NA, warning=F}
+set.seed(1)
+train<-sample(1:nrow(x),nrow(x)/2)
+test=(-train)
+y.test=y[test]
+```
+Training set with lambda of 4
+```{r, collapse=T, comment=NA, warning=F}
+ridge.mod<-glmnet(x[train,],y[train],alpha = 0,lambda = grid, thresh=1e-12)
+ridge.pred<-predict(ridge.mod,s=4,newx=x[test,])
+mean((ridge.pred-y.test)^2)
+```
+142199.2 DIff from the book likely due to set seed.
+
+null Hypothesis
+```{r, collapse=T, comment=NA, warning=F}
+mean((mean(y[train])-y.test)^2)
+# 224669.9 DIff from the book likely due to set seed.
+```
+
+Try a Large Lambda
+```{r, collapse=T, comment=NA, warning=F}
+ridge.pred<-predict(ridge.mod,s=1e10,newx = x[test,])
+mean((ridge.pred-y.test)^2)
+# 224669.8  Same as Null hypthosis as all coef go to zero for large Lambda
+```
+Try just least squares
+
+Try a Large Lambda
+```{r, collapse=T, comment=NA, warning=F}
+ridge.pred<-predict(ridge.mod,s=0,newx = x[test,],newy=y.test) #Exact would not work
+mean((ridge.pred-y.test)^2)
+#167789.8
+```
+CV TO CHOOSE LAMBDA
+```{r, collapse=T, comment=NA, warning=F}
+set.seed(1)
+cv.out=cv.glmnet(x[train,],y[train],alpha=0)
+plot(cv.out)
+bestlam<-cv.out$lambda.min
+bestlam #326.0828
+
+ridge.pred<-predict(ridge.mod,s=bestlam,newx = x[test,])
+mean((ridge.pred-y.test)^2) # 139856.6
+```
+
+```{r, collapse=T, comment=NA, warning=F}
+
+```
+
+```{r, collapse=T, comment=NA, warning=F}
+
+```
+```{r, collapse=T, comment=NA, warning=F}
+
+```
+```{r, collapse=T, comment=NA, warning=F}
+
+```
+```{r, collapse=T, comment=NA, warning=F}
+
+```
+```{r, collapse=T, comment=NA, warning=F}
+
+```
+```{r, collapse=T, comment=NA, warning=F}
+
+```
+```{r, collapse=T, comment=NA, warning=F}
+
+```
+```{r, collapse=T, comment=NA, warning=F}
+
+```
+### PCR and PLS
+
+### Application Exercise
+
+### Ridge and Lasso
+
+### PLS/PCR
+
+
