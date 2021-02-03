@@ -330,20 +330,25 @@ summary(pcr.fit)
 
 Partial Least Squares (PLS)
 
+
+PLS can be performed using `plsr()` function in the `pls` library. 
 ```{r, collapse=T, comment=NA, warning=F}
 set.seed(1)
 pls.fit<-plsr(Salary~.,data=Hitters,subset=train,scale=TRUE,validation="CV")
 summary(pls.fit)
+```
+```{r, collapse=T, comment=NA, warning=F}
 validationplot(pls.fit,val.type="MSEP")
 ```
+Lowest cross-validation error when only 2 pls are used.
 
-MSE
-
+Check MSE
 ```{r, collapse=T, comment=NA, warning=F}
 pls.pred<-predict(pls.fit,x[test,],ncomp = 2)
 mean((pls.pred-y.test)^2)# 125968.2
 ```
 
+PLS using the full data set
 ```{r, collapse=T, comment=NA, warning=F}
 pls.fit<-plsr(Salary~., data=HitData,scale=TRUE,ncomp=2)
 summary(pls.fit)
