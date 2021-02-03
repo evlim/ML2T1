@@ -278,39 +278,53 @@ runs, RBI, At Bat, Hits, Cwalks, Assists, and New League are all zero
 ### PCR and PLS
 
 </br></br>
-
 Principal Components Regression (PCR)
+PCR uses the first few components as the predictors in a linear regression model that is fit using least squares. We want to find out if a small number of principal components can explain most of the variability in the data.
 
-Load the `pls` library:
+PCR can be performed using `pcr()` function from `pls` library
 
+Objectives: Predict salary
+
+Load the `pls` library and run `pcr` to Hitters data.
+We can set scale=TRUE to standardize each predictor.
 ```{r, collapse=T, comment=NA, warning=F}
 library(pls)
 set.seed(2)
 #?pcr
 pcr.fit=pcr(Salary~.,data=HitData,scale=TRUE,validation="CV")
+```
+Check the resulting fit using `summary()`
+```{r, collapse=T, comment=NA, warning=F}
 summary(pcr.fit)
 ```
-See validation
+See cross-validation
 ```{r, collapse=T, comment=NA, warning=F}
 validationplot(pcr.fit,val.type = "MSEP")
 ```
-Test performace
+We can see that when 16 components, the cross-validation error is the smallest
+However, from the plot we also see that the cross-validation error is about the same with 1 component. 
+This suggests that a model that uses just 1 component might be enough to explain.
+
+Run PCR on the training data and check the performace
 ```{r, collapse=T, comment=NA, warning=F}
 set.seed(1)
 pcr.fit<-pcr(Salary~.,data=HitData,subset=train,scale=TRUE,validation="CV")
+summary(pcr.fit)
+```
+Lowest cross-validation error when 5 components used
+
+```{r, collapse=T, comment=NA, warning=F}
 validationplot(pcr.fit,val.type = "MSEP")
 ```
 Test
 ```{r, collapse=T, comment=NA, warning=F}
-pcr.pred=predict(pcr.fit,x[test,],ncomp=7)
-mean((pcr.pred-y.test)^2) #140751.3
+pcr.pred=predict(pcr.fit,x[test,],ncomp=5)
+mean((pcr.pred-y.test)^2) #142811.8
 ```
 
+PCR on the full data set
 ```{r, collapse=T, comment=NA, warning=F}
-```
-All data
-```{r, collapse=T, comment=NA, warning=F}
-pcr.fit<-pcr(y~x,scale=TRUE,ncomp=7)
+pcr.fit<-pcr(y~x,scale=TRUE,ncomp=5)
 summary(pcr.fit)
 ```
 
