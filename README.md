@@ -1,4 +1,5 @@
 # ML2 Team1
+## Linear Model Selection and Regularization
 | File                          | Info                                                            | Name
 | ----------------------------- | --------------------------------------------------------------- | --------------
 | <p>6.6 Lab 2<br>6.7 Lab 3</p> | <p>Ridge Regression and the Lasso<br>PCR and PLS Regression</p> | Lab.R
